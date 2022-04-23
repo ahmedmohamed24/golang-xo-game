@@ -1,9 +1,9 @@
 # XO Game in Golang
 
-X | O | X |
-- | - |- |
-O | X | O|
-X | O | X|
+|X | O | X |
+|- | - |- |
+|O | X | O|
+|X | O | X|
 
 
 ### Features

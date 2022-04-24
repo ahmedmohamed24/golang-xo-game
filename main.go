@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	xoBoard "github.com/ahmedmohamed24/golang-xo-game/board"
 	"github.com/alash3al/go-color"
 )
 
@@ -22,7 +23,8 @@ type player struct {
 }
 
 func main() {
-	clearTerminal()
+	xoBoard.BoardDisplay(&board)
+	xoBoard.ClearTerminal()
 	var name string
 	color.Green("%s\n", "First player name:")
 	takeUserName(&name)
@@ -34,7 +36,7 @@ func main() {
 }
 func (p *player) play() {
 	color.Magenta("%vScore:%v\n", p.name, p.score)
-	boardDisplay()
+	xoBoard.BoardDisplay(&board)
 	var row, column int
 	for {
 		color.Yellow("%v\n", "Enter the row number 0,1,2")
@@ -56,7 +58,7 @@ func (p *player) play() {
 	if board[column][row] == byte(0) {
 		board[column][row] = p.mark
 	} else {
-		clearTerminal()
+		xoBoard.ClearTerminal()
 		color.Red("%v\n", "Please select an empty cell!")
 		p.play()
 	}
@@ -90,25 +92,18 @@ func (p *player) checkWinner() bool {
 	return false
 }
 
-func clearBoard() {
-	for i := 0; i < 3; i++ {
-		for k := 0; k < 3; k++ {
-			board[i][k] = byte(0)
-		}
-	}
-}
 func playRound(firstPlayer *player, secondPlayer *player) {
-	clearBoard()
+	xoBoard.ClearBoard(&board)
 	for i := 0; ; i++ {
-		clearTerminal()
+		xoBoard.ClearTerminal()
 		if i%2 == 0 {
 			firstPlayer.play()
 			winner := firstPlayer.checkWinner()
 			if winner {
-				boardDisplay()
+				xoBoard.BoardDisplay(&board)
 				color.Cyan("%s\n", "Winner")
 				time.Sleep(time.Second * 4)
-				clearBoard()
+				xoBoard.ClearBoard(&board)
 				playRound(firstPlayer, secondPlayer)
 
 			}
@@ -116,19 +111,19 @@ func playRound(firstPlayer *player, secondPlayer *player) {
 			secondPlayer.play()
 			winner := secondPlayer.checkWinner()
 			if winner {
-				boardDisplay()
+				xoBoard.BoardDisplay(&board)
 				color.Cyan("%s\n", "Winner")
 				time.Sleep(time.Second * 4)
-				clearBoard()
+				xoBoard.ClearBoard(&board)
 				playRound(firstPlayer, secondPlayer)
 			}
 
 		}
 		if checkFinished() {
-			boardDisplay()
+			xoBoard.BoardDisplay(&board)
 			color.Cyan("%s\n", "Finished")
 			time.Sleep(time.Second * 4)
-			clearBoard()
+			xoBoard.ClearBoard(&board)
 			playRound(firstPlayer, secondPlayer)
 
 		}
@@ -147,25 +142,6 @@ func checkFinished() bool {
 
 }
 
-func boardDisplay() {
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			switch board[j][i] {
-			case 'x':
-				fmt.Printf("%v\t", string(byte(board[j][i])))
-			case 'y':
-				fmt.Printf("%v\t", string(byte(board[j][i])))
-			default:
-				fmt.Printf("%x\t", board[j][i])
-			}
-		}
-		fmt.Println()
-	}
-
-}
-func clearTerminal() {
-	fmt.Print("\033[H\033[2J")
-}
 func takeUserName(name *string) {
 	for i := 0; ; i++ {
 		terminalReader := bufio.NewReader(os.Stdout)
